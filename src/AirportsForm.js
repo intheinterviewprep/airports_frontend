@@ -1,6 +1,7 @@
 import React from 'react';
 import Airports from './Airports';
 export class AirportsForm extends React.Component{
+   
     constructor(props){
         super(props);
         this.state={
@@ -14,6 +15,7 @@ export class AirportsForm extends React.Component{
         this.handleParentDelete = this.handleParentDelete.bind(this);
         this.updateButtonRef=React.createRef(this);
         this.reset = this.reset.bind(this);
+        this.basicAuthDigest = 'Basic '+btoa('user:2f79e521-f838-4d97-9f5d-78b1df24d376');
     }
     reset(){
         if(this.nameRef.current.value!==''){this.nameRef.current.value=''}
@@ -43,14 +45,20 @@ export class AirportsForm extends React.Component{
         const params = {
             method:'DELETE',
             headers:{
-                'Content-Type':'application/json'
+                'Content-Type':'application/json',
+                'Authorization':this.basicAuthDigest
             },
             body:JSON.stringify(deleteAirportObject)
         }
         fetch(url,params)
         .then(res=>{
             if(res.status===200){
-                fetch(url)
+                const getParams = {
+                    headers:{
+                        'Authorization':this.basicAuthDigest
+                    }
+                }
+                fetch(url,getParams)
                 .then(res=>res.json())
                 .then(result=>(
                     this.setState({
@@ -72,7 +80,8 @@ export class AirportsForm extends React.Component{
         const params = {
             method:'PUT',
             headers:{
-                'Content-Type':'application/json'
+                'Content-Type':'application/json',
+                'Authorization':this.basicAuthDigest
             },
             body:JSON.stringify(updatedAirportObject)
         }
@@ -80,7 +89,12 @@ export class AirportsForm extends React.Component{
         .then(res=>{
             if(res.status===200){
                 console.log('update successful');
-                fetch(url)
+                const getParams = {
+                    headers:{
+                        'Authorization':this.basicAuthDigest
+                    }
+                }
+                fetch(url,getParams)
                 .then(res=>res.json())
                 .then(result=>(
                     this.setState({
@@ -104,15 +118,21 @@ export class AirportsForm extends React.Component{
         const params = {
             method:'POST',
             headers:{
-                'Content-Type':'application/json'
+                'Content-Type':'application/json',
+                'Authorization':this.basicAuthDigest
             },
             body:JSON.stringify(newAirport)
         }
         fetch(url,params)
         .then(res=>{
             if(res.status===200){
-               //make a get call to server
-               fetch(url)
+                const getParams = {
+                    headers:{
+                        'Authorization':this.basicAuthDigest
+                    }
+                }
+               //GET Call   
+               fetch(url,getParams)
                 .then(res=>res.json())
                .then(data=>{  
                     this.setState({
